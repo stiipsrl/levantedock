@@ -20,6 +20,12 @@ RUN apk update \
 
 RUN apk add --no-cache curl
 
+# ADD CERTBOT
+RUN apk add python3 python3-dev py3-pip build-base libressl-dev musl-dev libffi-dev rust cargo
+RUN pip3 install pip --upgrade
+RUN pip3 install certbot-nginx
+RUN mkdir /etc/letsencrypt
+
 RUN set -x ; \
     addgroup -g 82 -S www-data ; \
     adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1

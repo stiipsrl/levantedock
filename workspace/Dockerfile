@@ -1170,7 +1170,10 @@ RUN if [ ${INSTALL_SUPERVISOR} = true ]; then \
     python -m pip install --upgrade supervisor && \
     echo_supervisord_conf > /etc/supervisord.conf && \
     sed -i 's/\;\[include\]/\[include\]/g' /etc/supervisord.conf && \
-    sed -i 's/\;files\s.*/files = supervisord.d\/*.conf/g' /etc/supervisord.conf \
+    sed -i 's/\;files\s.*/files = supervisord.d\/*.conf/g' /etc/supervisord.conf && \
+    mkdir -p /var/run/supervisor && \
+    supervisord -c /etc/supervisord.conf && \
+    supervisorctl reread && supervisorctl restart all \
   ;fi \
 ;fi
 

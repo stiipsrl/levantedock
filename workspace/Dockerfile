@@ -1166,9 +1166,10 @@ RUN if [ ${INSTALL_POWERLINE} = true ]; then \
 ARG INSTALL_SUPERVISOR=false
 
 RUN if [ ${INSTALL_SUPERVISOR} = true ]; then \
-    if [ ${INSTALL_PYTHON} = true ]; then \
-    python -m pip install --upgrade supervisor && \
+    apt-get update -yqq && \
+    apt-get -y install supervisor && \
     echo_supervisord_conf > /etc/supervisord.conf && \
+    sed -i 's/\/tmp\/supervisor\.sock/\/var\/run\/supervisor\/supervisor.sock/g' /etc/supervisord.conf && \
     sed -i 's/\;\[include\]/\[include\]/g' /etc/supervisord.conf && \
     sed -i 's/\;files\s.*/files = supervisord.d\/*.conf/g' /etc/supervisord.conf && \
     mkdir -p /var/run/supervisor && \

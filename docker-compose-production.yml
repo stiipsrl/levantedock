@@ -151,6 +151,7 @@ services:
         - backend
       links:
         - docker-in-docker
+      restart: always
 
 ### PHP-FPM ##############################################
     php-fpm:
@@ -257,7 +258,7 @@ services:
         - backend
       links:
         - docker-in-docker
-
+      restart: always
 
 ### NGINX Server #########################################
     nginx:
@@ -284,6 +285,7 @@ services:
       networks:
         - frontend
         - backend
+      restart: always
 
 ### MySQL ################################################
     mysql:
@@ -304,6 +306,7 @@ services:
         - "${MYSQL_PORT}:3306"
       networks:
         - backend
+      restart: always
 
 ### phpMyAdmin ###########################################
     phpmyadmin:
@@ -323,6 +326,24 @@ services:
       networks:
         - frontend
         - backend
+      restart: always
+
+### AutoMySQLBackup ########################################
+    mysqlbackup:
+      image: selim13/automysqlbackup:2.6-5-debian
+      volumes:
+        - ${DATA_PATH_HOST}/automysqlbackup:/backup
+      environment:
+        USERNAME: 'root'
+        PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+        DBHOST: 'mysql'
+        DBEXCLUDE: 'performance_schema information_schema'
+        CRON_SCHEDULE: '0 0 * * *'
+      networks:
+        - backend
+      depends_on:
+        - mysql  
+      restart: always
 
 ### Docker-in-Docker ################################################
     docker-in-docker:
@@ -337,3 +358,4 @@ services:
         - 2375
       networks:
         - backend
+      restart: always
